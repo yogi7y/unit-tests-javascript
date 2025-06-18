@@ -1,9 +1,10 @@
-import { getExchangeRate, getShippingQuote } from "../src/dependencies";
+import { charge, getExchangeRate, getShippingQuote } from "../src/dependencies";
 import {
   max,
   fizzBuzz,
   getPriceInCurrency,
   getShippingInfo,
+  submitOrder,
 } from "../src/hello";
 import { describe, expect, it, vi } from "vitest";
 
@@ -68,5 +69,34 @@ describe("getShippingInfo", () => {
 
     expect(result).toMatch("$10");
     expect(result).toMatch("2 Days");
+  });
+});
+
+describe("submitOrder", () => {
+  const order = { totalAmount: 10 };
+  const creditCard = { creditCardNumber: 1234 };
+  it("should charge the customer", async () => {
+    vi.mocked(charge).mockResolvedValue({ status: "success" });
+
+    await submitOrder(order, creditCard);
+
+    expect(charge).toHaveBeenCalledWith(creditCard, order.totalAmount);
+  });
+
+  it("should return success when payment is successful", async () => {
+    vi.mocked(charge).mockResolvedValue({ status: "success" });
+
+    const result = await submitOrder(order, creditCard);
+
+    expect(result).toEqual({ success: true });
+  });
+  it("should return success as false when payment is failed", async () => {
+    vi.mocked(charge).mockResolvedValue({ status: "failed" });
+
+    const result = await submitOrder(order, creditCard);
+
+    console.log(result);
+
+    expect(result).toEqual({ success: false, error: "payment_error" });
   });
 });
