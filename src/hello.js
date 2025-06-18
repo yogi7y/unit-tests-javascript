@@ -5,7 +5,7 @@ import {
   charge,
   isValidEmail,
   sendEmail,
-} from "./dependencies";
+} from "./dependencies.js";
 
 export function max(a, b) {
   return a > b ? a : b;

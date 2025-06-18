@@ -12,5 +12,8 @@
   "devDependencies": {
     "vite": "^5.0.0",
     "vitest": "^3.2.3"
+  },
+  "dependencies": {
+    "delay": "^6.0.0"
   }
 }
